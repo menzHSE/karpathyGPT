@@ -29,7 +29,7 @@ m.to(device)
 
 # generate from the model
 print("Generating ...")
-context = torch.tensor(tokenizer.encode("Heute ist ein "), device=device).unsqueeze(0) 
+context = torch.tensor(tokenizer.encode("Heute ist ein Tag der "), device=device).unsqueeze(0) 
 print(tokenizer.decode(m.generate(context, max_new_tokens=500)[0].tolist()))
 
 context = torch.zeros((1, 10), dtype=torch.long, device=device)

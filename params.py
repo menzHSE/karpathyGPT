@@ -3,13 +3,13 @@ import tokenmonster
 
 
 class Params:
-   
+
     # hyperparameters
     batch_size = 64 # how many independent sequences will we process in parallel?
     block_size = 256 # what is the maximum context length for predictions?
-    max_iters = 5000
+    max_iters = 10000
     eval_interval = 500
-    learning_rate = 3e-3
+    learning_rate = 2e-4
     device = torch.device('cpu')
     eval_iters = 200
     n_embd =  512
@@ -20,7 +20,7 @@ class Params:
 
     @classmethod
     def initialize(cls):
-        cls.device = cls.autoselectDevice(verbose=1)       
+        cls.device = cls.autoselectDevice(verbose=1)
 
     # Check the devices that we have available and prefer CUDA over MPS and CPU
     @classmethod
@@ -28,7 +28,7 @@ class Params:
 
         # default: CPU
         device = torch.device('cpu')
-        
+
         if torch.cuda.is_available():
             # CUDA
             device = torch.device('cuda')
