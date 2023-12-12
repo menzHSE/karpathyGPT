@@ -16,7 +16,7 @@ class Params:
     n_head = 6
     n_layer = 6
     dropout = 0.2
-    vocab_size = 1024
+    vocab_size = -1
 
     @classmethod
     def initialize(cls):
