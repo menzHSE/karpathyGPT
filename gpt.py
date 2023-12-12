@@ -1,112 +1,8 @@
-# from gpt-dev.ipynb
 
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-
-import tokenmonster
-
-# Check the devices that we have available and prefer CUDA over MPS and CPU
-def autoselectDevice(verbose=1):
-
-    # default: CPU
-    device = torch.device('cpu')
-    
-    if torch.cuda.is_available():
-        # CUDA
-        device = torch.device('cuda')
-    elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
-        # MPS (acceleration on Apple silicon M1 / M2 chips)
-        device = torch.device('mps')
-
-    if verbose:
-        print('Using device:', device)
-
-    # Additional Info when using cuda
-    if verbose and device.type == 'cuda':
-        print(torch.cuda.get_device_name(0))
-
-    return device
-
-
-
-# hyperparameters
-batch_size = 64 # how many independent sequences will we process in parallel?
-block_size = 256 # what is the maximum context length for predictions?
-max_iters = 10000
-eval_interval = 500
-learning_rate = 3e-4
-#device = torch.device('cpu')
-device = autoselectDevice(verbose=1)
-eval_iters = 200
-n_embd = 384
-n_head = 6
-n_layer = 6
-dropout = 0.2
-useTokenMonster = False
-# ------------
-
-torch.manual_seed(1337)
-
-# read it in to inspect it
-with open('input.txt', 'r', encoding='utf-8') as f:
-    text = f.read()
-
-
-### TOKENMONSTER ###
-# Optionally set the tokenmonster directory, otherwise it will use ~/_tokenmonster
-
-if useTokenMonster:
-    tokenmonster.set_local_directory("./_tokenmonster")
-
-    # Load a vocabulary by name, filepath or URL
-    ttenc = tokenmonster.load("english-4096-consistent-v1")
-
-    encode = lambda s: list(ttenc.tokenize(s))
-    decode = lambda l: ttenc.decode(l)
-    vocab_size = ttenc.vocab_size
-    print(f"Vocab size is {vocab_size}")
-    ########################################
-else:
-    chars = sorted(list(set(text)))
-    vocab_size = len(chars)
-    # create a mapping from characters to integers
-    stoi = { ch:i for i,ch in enumerate(chars) }
-    itos = { i:ch for i,ch in enumerate(chars) }
-    encode = lambda s: [stoi[c] for c in s] # encoder: take a string, output a list of integers
-    decode = lambda l: ''.join([itos[i] for i in l]) # decoder: take a list of integers, output a string
-    #########################################
-
-# Train and test splits
-data = torch.tensor(encode(text), dtype=torch.long)
-n = int(0.9*len(data)) # first 90% will be train, rest val
-train_data = data[:n]
-val_data = data[n:]
-
-# data loading
-def get_batch(split):
-    # generate a small batch of data of inputs x and targets y
-    data = train_data if split == 'train' else val_data
-    ix = torch.randint(len(data) - block_size, (batch_size,))
-    x = torch.stack([data[i:i+block_size] for i in ix])
-    y = torch.stack([data[i+1:i+block_size+1] for i in ix])
-    x, y = x.to(device), y.to(device)
-    return x, y
-
-
-@torch.no_grad()
-def estimate_loss():
-    out = {}
-    model.eval()
-    for split in ['train', 'val']:
-        losses = torch.zeros(eval_iters)
-        for k in range(eval_iters):
-            X, Y = get_batch(split)
-            logits, loss = model(X, Y)
-            losses[k] = loss.item()
-        out[split] = losses.mean()
-    model.train()
-    return out
+from params import Params
 
 class Block(nn.Module):
     """ Transformer block: communication followed by computation """
@@ -133,6 +29,12 @@ class Head(nn.Module):
 
     def __init__(self, head_size):
         super().__init__()
+
+        # params
+        n_embd = Params.n_embd
+        block_size = Params.block_size
+        dropout = Params.dropout
+
         self.key = nn.Linear(n_embd, head_size, bias=False)
         self.query = nn.Linear(n_embd, head_size, bias=False)
         self.value = nn.Linear(n_embd, head_size, bias=False)
@@ -162,6 +64,11 @@ class MultiHeadAttention(nn.Module):
 
     def __init__(self, num_heads, head_size):
         super().__init__()
+
+        # params
+        n_embd = Params.n_embd        
+        dropout = Params.dropout
+
         # multiple different "communication channels", e.g. "I am vowel", "I am consonant
         # information exchanged in these channels is 8-dimensional
         self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])
@@ -179,6 +86,11 @@ class FeedFoward(nn.Module):
 
     def __init__(self, n_embd):
         super().__init__()
+
+        # params
+        n_embd = Params.n_embd        
+        dropout = Params.dropout
+
         self.net = nn.Sequential(
             nn.Linear(n_embd, 4 * n_embd),
             nn.ReLU(),
@@ -190,10 +102,18 @@ class FeedFoward(nn.Module):
         return self.net(x)
 
 # super simple bigram model
-class BigramLanguageModel(nn.Module):
+class GPTModel(nn.Module):
 
     def __init__(self):
         super().__init__()
+
+        # params
+        vocab_size = Params.vocab_size
+        n_embd = Params.n_embd        
+        block_size = Params.block_size
+        n_head = Params.n_head
+        n_layer = Params.n_layer
+
         # each token directly reads off the logits for the next token from a lookup table
         # we have another indirection in terms of an actual embedding via a linear layer
         
@@ -226,7 +146,7 @@ class BigramLanguageModel(nn.Module):
 
         # idx and targets are both (B,T) tensor of integers
         tok_emb  = self.token_embedding_table(idx) # (B,T,n_embd)
-        pos_emb  = self.position_embedding_table(torch.arange(T, device=device)) # (T,C)
+        pos_emb  = self.position_embedding_table(torch.arange(T, device=Params.device)) # (T,C)
         x = tok_emb + pos_emb # (B,T,C)   
 
         # "communication"
@@ -247,6 +167,7 @@ class BigramLanguageModel(nn.Module):
 
     def generate(self, idx, max_new_tokens):
         # idx is (B, T) array of indices in the current context
+        block_size = Params.block_size
         for _ in range(max_new_tokens):
             # crop idx to the last block_size tokens
             idx_cond = idx[:, -block_size:]
@@ -261,31 +182,3 @@ class BigramLanguageModel(nn.Module):
             # append sampled index to the running sequence
             idx = torch.cat((idx, idx_next), dim=1) # (B, T+1)            
         return idx
-
-
-model = BigramLanguageModel()
-m = model.to(device)
-
-# create a PyTorch optimizer
-optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
-
-
-for iter in range(max_iters):
-
-    # every once in a while evaluate the loss on train and val sets
-    if iter % eval_interval == 0:
-        losses = estimate_loss()
-        print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
-
-    # sample a batch of data
-    xb, yb = get_batch('train')
-
-    # evaluate the loss
-    logits, loss = model(xb, yb)
-    optimizer.zero_grad(set_to_none=True)
-    loss.backward()
-    optimizer.step()
-
-# generate from the model
-context = torch.zeros((1, 1), dtype=torch.long, device=device)
-print(decode(m.generate(context, max_new_tokens=1000)[0].tolist()))
