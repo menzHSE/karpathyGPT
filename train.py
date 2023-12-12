@@ -11,16 +11,16 @@ torch.manual_seed(1337)
 
 # read it in to inspect it
 # wget https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt
-with open('input.txt', 'r', encoding='utf-8') as f:
+with open('german_presidents.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 # Tokenizer
-#chars = sorted(list(set(text)))
-#Params.vocab_size = len(chars)
-#tokenizer = TokenizerSimple(chars)
+chars = sorted(list(set(text)))
+Params.vocab_size = len(chars)
+tokenizer = TokenizerSimple(chars)
 
-Params.vocab_size = 1024
-tokenizer = Tokenizer()
+#Params.vocab_size = 1024
+#tokenizer = Tokenizer()
 
 # Train and test splits
 data = torch.tensor(tokenizer.encode(text), dtype=torch.long)
@@ -66,6 +66,7 @@ def estimate_loss():
 
 
 model = GPTModel()
+#model.load_state_dict(torch.load("gpt.model", map_location=device))
 model.to(device)
 
 # create a PyTorch optimizer
