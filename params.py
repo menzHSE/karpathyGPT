@@ -12,11 +12,11 @@ class Params:
     learning_rate = 1e-4     
     device = torch.device('cpu')
     eval_iters = 200
-    n_embd =  384
-    n_head = 6
+    n_embd =  512
+    n_head = 8
     n_layer = 6
-    dropout = 0.2
-    vocab_size = -1
+    dropout = 0.3
+    vocab_size = 1024
 
     @classmethod
     def initialize(cls):

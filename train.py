@@ -15,9 +15,12 @@ with open('input.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 # Tokenizer
-chars = sorted(list(set(text)))
-Params.vocab_size = len(chars)
-tokenizer = TokenizerSimple(chars)
+#chars = sorted(list(set(text)))
+#Params.vocab_size = len(chars)
+#tokenizer = TokenizerSimple(chars)
+
+Params.vocab_size = 1024
+tokenizer = Tokenizer()
 
 # Train and test splits
 data = torch.tensor(tokenizer.encode(text), dtype=torch.long)
