@@ -66,7 +66,7 @@ def estimate_loss():
 
 
 model = GPTModel()
-m = model.to(device)
+model.to(device)
 
 # create a PyTorch optimizer
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
@@ -87,4 +87,4 @@ for iter in range(max_iters):
     loss.backward()
     optimizer.step()
 
-torch.save(m.state_dict(), "gpt.model")
+torch.save(model.state_dict(), "gpt.model")
