@@ -27,4 +27,4 @@ m.to(device)
 # generate from the model
 print("Generating ...")
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
-print(tokenizer.decode(m.generate(context, max_new_tokens=10000)[0].tolist()))
+print(tokenizer.decode(m.generate(context, max_new_tokens=1000)[0].tolist()))
