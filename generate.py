@@ -24,10 +24,10 @@ tokenizer = TokenizerSimple(chars)
 device = Params.device
 
 m = GPTModel()
-m.load_state_dict(torch.load("gpt.model"))
+m.load_state_dict(torch.load("gpt.model", map_location=torch.device('cpu')))
 m.to(device)
 
 # generate from the model
 print("Generating ...")
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
-print(tokenizer.decode(m.generate(context, max_new_tokens=1000)[0].tolist()))
+print(tokenizer.decode(m.generate(context, max_new_tokens=100)[0].tolist()))
