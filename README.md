@@ -1,6 +1,6 @@
 # karpathyGPT
 
-Implementation of https://www.youtube.com/watch?v=kCc8FmEb1nY
+Implementation of a small GPT language model based on Andrej Karpathy's YouTube Lecture: https://www.youtube.com/watch?v=kCc8FmEb1nY
 
 See: https://github.com/karpathy/ng-video-lecture
 
