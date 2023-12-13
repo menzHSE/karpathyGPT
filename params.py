@@ -5,17 +5,17 @@ import tokenmonster
 class Params:
 
     # hyperparameters
-    batch_size = 64 # how many independent sequences will we process in parallel?
-    block_size = 256 # what is the maximum context length for predictions?
+    batch_size = 128 # how many independent sequences will we process in parallel?
+    block_size = 512 # what is the maximum context length for predictions?
     max_iters = 10000
     eval_interval = 500
     learning_rate = 2e-4
     device = torch.device('cpu')
     eval_iters = 200
-    n_embd =  512
+    n_embd =  1024
     n_head = 8
-    n_layer = 6
-    dropout = 0.3
+    n_layer = 8
+    dropout = 0.1
     vocab_size = 1024
 
     @classmethod
