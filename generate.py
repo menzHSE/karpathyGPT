@@ -8,6 +8,10 @@ from tokenizer import *
 parser = argparse.ArgumentParser(description="Load a GPT model")
 parser.add_argument("-m", "--model", type=str, required=False, default="gpt.model",
                     help="Path to the model file (default: gpt.model)")
+parser.add_argument("-c", "--context", type=str, default=".",
+                    help="Initial context text (default: '.')")
+parser.add_argument("-n", "--numTokens", type=int, default=100,
+                    help="Number of tokens to generate (default: 100)")
 args = parser.parse_args()
 
 
@@ -35,9 +39,12 @@ m.to(device)
 
 
 # generate from the model
-print("Generating ...")
-context = torch.tensor(tokenizer.encode("Heute ist ein Tag der "), device=device).unsqueeze(0) 
-print(tokenizer.decode(m.generate(context, max_new_tokens=500)[0].tolist()))
+contextText = args.context
+numTokens = args.numTokens
+print(f'Generating {numTokens} with context "{contextText}" ...')
 
-context = torch.zeros((1, 10), dtype=torch.long, device=device)
-print(tokenizer.decode(m.generate(context, max_new_tokens=500)[0].tolist()))
+
+# with context
+context = torch.tensor(tokenizer.encode(contextText), device=device).unsqueeze(0) 
+print(tokenizer.decode(m.generate(context, max_new_tokens=numTokens)[0].tolist()))
+
