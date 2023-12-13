@@ -90,3 +90,43 @@ Integration, liebe Frau
 * Better tokenizer for German text should boost performance significantly
 * Learning rate scheduling
 * Pre-train on larger dataset then finetune on the German speeches data
+
+
+# Additional results on the tinyShakespeare data set
+
+```python generate.py -n 500```
+
+```
+Well did I seech'd my voice's brother faned
+And keep and nold dead, in spoil
+That were ours and deepr Duaving, that I was plaourply about
+Whom it one marks.
+
+EDWARD:
+He shall teller,
+Sir;
+Propatch me there, we citize honest fellows, might respondized the go: be found
+Rid her and what the great prosanctance: and be born to Edward the way
+Of yoke of rwore
+To save your honesty you, on's; and, and, I'll think for where antired, your masters,
+inductions, I were
+may bid some green told you pready to nothing outward.
+prove what you did bear I issue of his thousand king,
+Or else, and my noble: us impabscience,
+Your blood and trurrow wronged with blood,
+Cruel Clbrother Clarence; there was you inher her.
+
+KING EDWARD IV:
+Brother, me by Kat shall thatboldsymbol?
+Lawcent gave love bring us mine own, whom you go with him;
+That first himself will yield his as soon as city
+To queen,
+I would have you well miss me, and I will well sleep on tented:
+'tis a crown purpose,
+The youngest men; and I to,
+Towards Edward will you must not call him revown,
+You may?
+
+KERY uncur in the same, theek:
+I'll do welcome cleanwell, be not excellent,--
+```
