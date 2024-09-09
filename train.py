@@ -89,5 +89,5 @@ for iter in range(max_iters):
     optimizer.zero_grad(set_to_none=True)
     loss.backward()
     optimizer.step()
-
+#    print(f"iter {iter} done")
 torch.save(model.state_dict(), "gpt.model")

@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 
 # read it in to inspect it
-with open('german_presidents.txt', 'r', encoding='utf-8') as f:
+with open('trump_speeches.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 # Tokenizer
