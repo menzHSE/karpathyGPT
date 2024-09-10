@@ -41,7 +41,7 @@ m.to(device)
 # generate from the model
 contextText = args.context
 numTokens = args.numTokens
-print(f'Generating {numTokens} with context "{contextText}" ...')
+print(f'Generating {numTokens} tokens with context "{contextText}" ...')
 
 
 # with context
