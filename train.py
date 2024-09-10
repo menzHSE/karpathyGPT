@@ -18,10 +18,10 @@ with open('speeches.txt', 'r', encoding='utf-8') as f:
 # Tokenizer
 chars = sorted(list(set(text)))
 Params.vocab_size = len(chars)
-#tokenizer = TokenizerSimple(chars)
+tokenizer = TokenizerSimple(chars)
 
-Params.vocab_size = 1024
-tokenizer = Tokenizer()
+#Params.vocab_size = 1024
+#tokenizer = Tokenizer()
 
 # Train and test splits
 data = torch.tensor(tokenizer.encode(text), dtype=torch.long)

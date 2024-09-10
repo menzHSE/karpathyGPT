@@ -23,10 +23,10 @@ with open('speeches.txt', 'r', encoding='utf-8') as f:
 # Tokenizer
 chars = sorted(list(set(text)))
 Params.vocab_size = len(chars)
-#tokenizer = TokenizerSimple(chars)
+tokenizer = TokenizerSimple(chars)
 
-Params.vocab_size = 1024
-tokenizer = Tokenizer()
+#Params.vocab_size = 1024
+#tokenizer = Tokenizer()
 
 # Params
 device = Params.device
@@ -34,7 +34,7 @@ device = Params.device
 # Load the model
 m = GPTModel()
 model_path = args.model  # model path from command line argument
-m.load_state_dict(torch.load(model_path, map_location=device))
+m.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
 m.to(device)
 
 

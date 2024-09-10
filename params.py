@@ -7,16 +7,16 @@ class Params:
     # hyperparameters
     batch_size = 48 # how many independent sequences will we process in parallel?
     block_size = 512 # what is the maximum context length for predictions?
-    max_iters = 8000
+    max_iters =  12000
     eval_interval = 500
-    learning_rate = 2e-4
+    learning_rate = 1e-4
     device = torch.device('cpu')
     eval_iters = 200
     n_embd =  1024
-    n_head = 8
+    n_head = 12
     n_layer = 8
     dropout = 0.1
-    vocab_size = 1024
+    #vocab_size = 1024
 
     @classmethod
     def initialize(cls):
