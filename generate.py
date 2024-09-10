@@ -17,16 +17,16 @@ args = parser.parse_args()
 
 
 # read it in to inspect it
-with open('trump_speeches.txt', 'r', encoding='utf-8') as f:
+with open('speeches.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 # Tokenizer
 chars = sorted(list(set(text)))
 Params.vocab_size = len(chars)
-tokenizer = TokenizerSimple(chars)
+#tokenizer = TokenizerSimple(chars)
 
-#Params.vocab_size = 1024
-#tokenizer = Tokenizer()
+Params.vocab_size = 1024
+tokenizer = Tokenizer()
 
 # Params
 device = Params.device
