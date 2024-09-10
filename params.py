@@ -12,9 +12,9 @@ class Params:
     learning_rate = 1e-4
     device = torch.device('cpu')
     eval_iters = 200
-    n_embd =  1024
-    n_head = 12
-    n_layer = 8
+    n_embd = 512
+    n_head = 8
+    n_layer = 6
     dropout = 0.1
     #vocab_size = 1024
 
