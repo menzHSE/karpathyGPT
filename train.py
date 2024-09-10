@@ -88,6 +88,5 @@ for iter in range(max_iters):
     logits, loss = model(xb, yb)
     optimizer.zero_grad(set_to_none=True)
     loss.backward()
-    optimizer.step()
-    print(f".")
+    optimizer.step()   
 torch.save(model.state_dict(), "gpt.model")
