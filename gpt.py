@@ -47,15 +47,17 @@ class Head(nn.Module):
         # input of size (batch, time-step, channels)
         # output of size (batch, time-step, head size)
         B,T,C = x.shape
-        k = self.key(x)   # (B,T,hs)
         q = self.query(x) # (B,T,hs)
+        k = self.key(x)   # (B,T,hs)
+        v = self.value(x) # (B,T,hs)       
+
         # compute attention scores ("affinities")
         wei = q @ k.transpose(-2,-1) * k.shape[-1]**-0.5 # (B, T, hs) @ (B, hs, T) -> (B, T, T)
         wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf')) # (B, T, T)
         wei = F.softmax(wei, dim=-1) # (B, T, T)
         wei = self.dropout(wei)
         # perform the weighted aggregation of the values
-        v = self.value(x) # (B,T,hs)
+
         out = wei @ v # (B, T, T) @ (B, T, hs) -> (B, T, hs)
         return out
     
@@ -82,7 +84,7 @@ class MultiHeadAttention(nn.Module):
     
 
 class FeedFoward(nn.Module):
-    """ a simple linear layer followed by a non-linearity """
+    """ Small feed-forward network """
 
     def __init__(self, n_embd):
         super().__init__()
@@ -94,14 +96,14 @@ class FeedFoward(nn.Module):
         self.net = nn.Sequential(
             nn.Linear(n_embd, 4 * n_embd),
             nn.ReLU(),
-            nn.Linear(4 * n_embd, n_embd),   
+            nn.Linear(4 * n_embd, n_embd),  
             nn.Dropout(dropout), 
         )
 
     def forward(self, x):
         return self.net(x)
 
-# super simple bigram model
+# Simple GPT-style model
 class GPTModel(nn.Module):
 
     def __init__(self):
