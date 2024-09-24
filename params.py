@@ -20,7 +20,7 @@ class Params:
 
     @classmethod
     def initialize(cls):
-        cls.device = cls.autoselectDevice(verbose=1)
+        cls.device = cls.autoselectDevice(verbose=0)
 
     # Check the devices that we have available and prefer CUDA over MPS and CPU
     @classmethod
