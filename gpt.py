@@ -165,7 +165,7 @@ class GPTModel(nn.Module):
 
         return logits, loss
 
-    def generate(self, idx, max_new_tokens):
+    def generate(self, idx, max_new_tokens, tokenizer=None):
         # idx is (B, T) array of indices in the current context
         block_size = Params.block_size
         for _ in range(max_new_tokens):
@@ -180,5 +180,10 @@ class GPTModel(nn.Module):
             # sample from the distribution
             idx_next = torch.multinomial(probs, num_samples=1) # (B, 1)
             # append sampled index to the running sequence
-            idx = torch.cat((idx, idx_next), dim=1) # (B, T+1)            
+            idx = torch.cat((idx, idx_next), dim=1) # (B, T+1) 
+            
+            # print
+            if tokenizer:
+                print(tokenizer.decode(idx_next[0].tolist()), end="", flush=True)
+                       
         return idx

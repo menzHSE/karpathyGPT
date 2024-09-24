@@ -41,10 +41,12 @@ m.to(device)
 # generate from the model
 contextText = args.context
 numTokens = args.numTokens
-print(f'Generating {numTokens} tokens with context "{contextText}" ...')
-
+#print(f'Generating {numTokens} tokens with context "{contextText}" ...')
 
 # with context
 context = torch.tensor(tokenizer.encode(contextText), dtype=torch.long, device=device).unsqueeze(0) 
-print(tokenizer.decode(m.generate(context, max_new_tokens=numTokens)[0].tolist()))
+
+# output
+print(contextText, end='', flush=True)
+m.generate(context, max_new_tokens=numTokens, tokenizer=tokenizer)
 
