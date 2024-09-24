@@ -32,9 +32,9 @@ class Params:
         if torch.cuda.is_available():
             # CUDA
             device = torch.device('cuda')
-        elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
-            # MPS (acceleration on Apple silicon M1 / M2 chips)
-            device = torch.device('mps')
+#        elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
+#            # MPS (acceleration on Apple silicon M1 / M2 chips)
+#            device = torch.device('mps')
 
         if verbose:
             print('Using device:', device)
