@@ -149,10 +149,11 @@ class GPTModel(nn.Module):
         pos_emb  = self.position_embedding_table(torch.arange(T, device=Params.device)) # (T,C)
         x = tok_emb + pos_emb # (B,T,C)   
 
-        # "communication"
+        # "communication" and "computation"
         x = self.blocks(x) # apply several blocks of multi-head attention (B,T,C) 
-        # "computation" (tokens "think" about the communication they received)
+        # final layer norm 
         x = self.ln_f(x) # (B,T,C)    
+        # and logits
         logits   = self.lm_head(x) # (B,T,vocab_size)
 
         if targets is None:
